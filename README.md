@@ -1,2 +1,2 @@
 # libJCX
-A library containing various classes used in my tweaks.
+A library used by JacobCXDev.

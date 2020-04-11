@@ -1,0 +1,10 @@
+Package: com.jacobcxdev.libjcx
+Name: libJCX
+Depends: firmware (>= 11.0)
+Architecture: iphoneos-arm
+Description: A library used by JacobCXDev.
+Maintainer: JacobCXDev <jacobcxdev@gmail.com>
+Author: JacobCXDev <jacobcxdev@gmail.com>
+Section: System
+Version: 1.0.0
+Tag: role::developer
