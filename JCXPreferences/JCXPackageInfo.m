@@ -2,9 +2,11 @@
 
 @implementation JCXPackageInfo
 static NSMutableDictionary<NSString *, NSDictionary *> *_controlDict;
-+ (NSDictionary *_Nullable)controlForBundleID:(NSString *_Nullable)bundleID {
++ (NSDictionary * _Nullable)controlForBundleID:(NSString * _Nullable)bundleID {
     if (!bundleID) return nil;
-    if (!_controlDict) _controlDict = [NSMutableDictionary<NSString *, NSDictionary *> new];
+    if (!_controlDict) {
+        _controlDict = [NSMutableDictionary<NSString *, NSDictionary *> new];
+    }
     if (!_controlDict[bundleID]) {
         NSTask *dpkg = [NSTask new];
         [dpkg setLaunchPath:@"/usr/bin/dpkg"];

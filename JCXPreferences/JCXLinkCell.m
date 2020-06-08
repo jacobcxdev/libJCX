@@ -14,8 +14,9 @@
         _linkURL = [NSURL URLWithString:specifier.properties[@"linkURL"]];
 
         self.accessoryView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, size, size)];
-        if (_accessoryImageSystemName)
+        if (_accessoryImageSystemName) {
             if (@available(iOS 13, *)) ((UIImageView *)self.accessoryView).image = [UIImage systemImageNamed:_accessoryImageSystemName];
+        }
         [self.accessoryView sizeToFit];
 
         if (_shouldDisplayAvatar) {
@@ -39,8 +40,9 @@
             _avatarImageView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
             _avatarImageView.userInteractionEnabled = false;
             _avatarImageView.layer.minificationFilter = kCAFilterTrilinear;
-            if (_avatarImageSystemName)
+            if (_avatarImageSystemName) {
                 if (@available(iOS 13, *)) _avatarImageView.image = [UIImage systemImageNamed:_avatarImageSystemName];
+            }
             _avatarImageView.tintColor = [UIColor lightGrayColor];
             [_avatarView addSubview:_avatarImageView];
             
@@ -61,7 +63,7 @@
         });
     });
 }
-- (void)setAvatar:(UIImage *_Nonnull)image {
+- (void)setAvatar:(UIImage * _Nonnull)image {
     bool hidden = _avatarView.alpha == 0;
     if (!hidden) [self setAvatarHidden:true];
     _avatarImageView.image = image;
@@ -73,13 +75,14 @@
         _avatarView.alpha = hidden ? 0 : 1;
     }];
 }
-- (void)setLinkURL:(NSURL *_Nonnull)url {
+- (void)setLinkURL:(NSURL * _Nonnull)url {
     _linkURL = url;
 }
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
     if (!selected || !_linkURL) return;
-    if ([[UIApplication sharedApplication] canOpenURL:_linkURL])
+    if ([[UIApplication sharedApplication] canOpenURL:_linkURL]) {
         [[UIApplication sharedApplication] openURL:_linkURL options:@{} completionHandler:nil];
+    }
 }
 @end

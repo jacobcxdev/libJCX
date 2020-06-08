@@ -2,7 +2,9 @@
 
 @implementation JCXRootListController
 - (NSArray *)specifiers {
-    if (!_specifiers) _specifiers = [self loadSpecifiersFromPlistName:@"Root" target:self];
+    if (!_specifiers) {
+        _specifiers = [self loadSpecifiersFromPlistName:@"Root" target:self];
+    }
     return _specifiers;
 }
 - (id)readPreferenceValue:(PSSpecifier*)specifier {
@@ -16,7 +18,8 @@
 	plist[specifier.properties[@"key"]] = value;
 	[plist writeToFile:path atomically:true];
 	CFStringRef notificationName = (__bridge CFStringRef)specifier.properties[@"PostNotification"];
-	if (notificationName)
+	if (notificationName) {
 		CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), notificationName, NULL, NULL, true);
+    }
 }
 @end

@@ -21,18 +21,25 @@
 }
 - (void)postNotificationUsingPostHandlerWithName:(NSString *)name to:(NSNotificationCenter *)nsNotificationCenter {
     NSDictionary *userInfo = _postHandler(name);
-    if (userInfo) [self postNotificationWithName:name userInfo:userInfo to:nsNotificationCenter];
-    else [self postNotificationWithName:name to:nsNotificationCenter];
+    if (userInfo) {
+        [self postNotificationWithName:name userInfo:userInfo to:nsNotificationCenter];
+    } else {
+        [self postNotificationWithName:name to:nsNotificationCenter];
+    }
 }
 - (void)postNotificationWithName:(NSString *)name to:(NSNotificationCenter *)nsNotificationCenter {
-    if ([nsNotificationCenter isKindOfClass:[NSDistributedNotificationCenter class]])
+    if ([nsNotificationCenter isKindOfClass:[NSDistributedNotificationCenter class]]) {
         [(NSDistributedNotificationCenter *)nsNotificationCenter postNotificationName:name object:nil userInfo:nil deliverImmediately:true];
-    else [nsNotificationCenter postNotificationName:name object:nil];
+    } else {
+        [nsNotificationCenter postNotificationName:name object:nil];
+    }
 }
 - (void)postNotificationWithName:(NSString *)name userInfo:(NSDictionary *)userInfo to:(NSNotificationCenter *)nsNotificationCenter {
-    if ([nsNotificationCenter isKindOfClass:[NSDistributedNotificationCenter class]])
+    if ([nsNotificationCenter isKindOfClass:[NSDistributedNotificationCenter class]]) {
         [(NSDistributedNotificationCenter *)nsNotificationCenter postNotificationName:name object:nil userInfo:userInfo deliverImmediately:true];
-    else [nsNotificationCenter postNotificationName:name object:nil userInfo:userInfo];
+    } else {
+        [nsNotificationCenter postNotificationName:name object:nil userInfo:userInfo];
+    }
 }
 - (void)receiveNotification:(NSNotification *)notification {
     _receivedHandler(notification);

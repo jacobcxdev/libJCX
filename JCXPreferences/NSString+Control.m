@@ -1,7 +1,7 @@
 #import "NSString+Control.h"
 
 @implementation NSString (Control)
-- (NSString *_Nonnull)stringByInterpolatingPackageInfoFromControl:(NSDictionary *_Nullable)control {
+- (NSString * _Nonnull)stringByInterpolatingPackageInfoFromControl:(NSDictionary * _Nullable)control {
     if (!control) return self;
     NSString *string = [self copy];
     NSError *error = nil;
@@ -11,7 +11,9 @@
     for (int i = matches.count - 1; i >= 0; i--) {
         NSTextCheckingResult *match = matches[i];
         NSString *fieldName = control[[string substringWithRange:[match rangeWithName:@"fieldName"]]];
-        if (fieldName) string = [string stringByReplacingOccurrencesOfString:[string substringWithRange:match.range] withString:fieldName];
+        if (fieldName) {
+            string = [string stringByReplacingOccurrencesOfString:[string substringWithRange:match.range] withString:fieldName];
+        }
     }
     return string;
 }

@@ -1,13 +1,17 @@
 #import "JCXMailCell.h"
 
 @implementation JCXMailCell
-+ (NSURL *_Nullable)mailtoURLWithEmailAddress:(NSString *_Nonnull)emailAddress {
++ (NSURL * _Nullable)mailtoURLWithEmailAddress:(NSString * _Nonnull)emailAddress {
     emailAddress = [emailAddress stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
     return [NSURL URLWithString:[@"mailto:" stringByAppendingString:emailAddress]];
 }
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier specifier:(PSSpecifier *)specifier {
-    if (!specifier.properties[@"avatarImageSystemName"]) specifier.properties[@"avatarImageSystemName"] = @"envelope.circle.fill";
-    if (!specifier.properties[@"accessoryImageSystemName"]) specifier.properties[@"accessoryImageSystemName"] = @"paperplane.fill";
+    if (!specifier.properties[@"avatarImageSystemName"]) {
+        specifier.properties[@"avatarImageSystemName"] = @"envelope.circle.fill";
+    }
+    if (!specifier.properties[@"accessoryImageSystemName"]) {
+        specifier.properties[@"accessoryImageSystemName"] = @"paperplane.fill";
+    }
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier specifier:specifier];
     if (self) {
         _emailAddress = specifier.properties[@"emailAddress"];

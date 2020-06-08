@@ -1,13 +1,17 @@
 #import "JCXGitHubCell.h"
 
 @implementation JCXGitHubCell
-+ (NSURL *_Nullable)gitHubURLForRemote:(NSString *_Nonnull)remote {
++ (NSURL * _Nullable)gitHubURLForRemote:(NSString * _Nonnull)remote {
     remote = [remote stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
     return [NSURL URLWithString:[@"https://github.com/" stringByAppendingString:remote]];
 }
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier specifier:(PSSpecifier *)specifier {
-    if (!specifier.properties[@"avatarImageSystemName"]) specifier.properties[@"avatarImageSystemName"] = @"line.horizontal.3.decrease.circle.fill";
-    if (!specifier.properties[@"accessoryImageSystemName"]) specifier.properties[@"accessoryImageSystemName"] = @"chevron.left.slash.chevron.right";
+    if (!specifier.properties[@"avatarImageSystemName"]) {
+        specifier.properties[@"avatarImageSystemName"] = @"line.horizontal.3.decrease.circle.fill";
+    }
+    if (!specifier.properties[@"accessoryImageSystemName"]) {
+        specifier.properties[@"accessoryImageSystemName"] = @"chevron.left.slash.chevron.right";
+    }
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier specifier:specifier];
     if (self) {
         _remote = specifier.properties[@"remote"];

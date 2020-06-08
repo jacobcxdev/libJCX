@@ -1,13 +1,17 @@
 #import "JCXPayPalCell.h"
 
 @implementation JCXPayPalCell
-+ (NSURL *_Nullable)paypalURLForUsername:(NSString *_Nonnull)username {
++ (NSURL * _Nullable)paypalURLForUsername:(NSString * _Nonnull)username {
     username = [username stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
     return [NSURL URLWithString:[@"https://www.paypal.me/" stringByAppendingString:username]];
 }
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier specifier:(PSSpecifier *)specifier {
-    if (!specifier.properties[@"avatarImageSystemName"]) specifier.properties[@"avatarImageSystemName"] = @"dollarsign.circle.fill";
-    if (!specifier.properties[@"accessoryImageSystemName"]) specifier.properties[@"accessoryImageSystemName"] = @"link.circle";
+    if (!specifier.properties[@"avatarImageSystemName"]) {
+        specifier.properties[@"avatarImageSystemName"] = @"dollarsign.circle.fill";
+    }
+    if (!specifier.properties[@"accessoryImageSystemName"]) {
+        specifier.properties[@"accessoryImageSystemName"] = @"link.circle";
+    }
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier specifier:specifier];
     if (self) {
         _username = specifier.properties[@"username"];
