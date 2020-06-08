@@ -4,7 +4,9 @@
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier specifier:(PSSpecifier *)specifier {
     self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier specifier:specifier];
     if (self) {
-        if (!specifier.properties[@"height"]) specifier.properties[@"height"] = [NSNumber numberWithInt:176];
+        if (!specifier.properties[@"height"]) {
+            specifier.properties[@"height"] = [NSNumber numberWithInt:176];
+        }
         self.textLabel.text = nil;
         self.detailTextLabel.text = nil;
 
@@ -34,16 +36,23 @@
         [self.contentView.leadingAnchor constraintEqualToAnchor:self.leadingAnchor constant:22].active = true;
         [self.contentView.trailingAnchor constraintEqualToAnchor:self.trailingAnchor constant:-22].active = true;
 
+        _colours = [UIColor CGColorArrayWithHexString:specifier.properties[@"colours"] ?: @""];
+        if (specifier.properties[@"darkColours"]) {
+            _darkColours = [UIColor CGColorArrayWithHexString:specifier.properties[@"darkColours"]];
+        }
+
         _gradientLayer = [CAGradientLayer layer];
-        _gradientLayer.colors = [UIColor CGColorArrayWithHexString:specifier.properties[@"colors"]];
         _gradientLayer.startPoint = CGPointMake(0, 1);
         _gradientLayer.endPoint = CGPointMake(1, 0);
         _gradientLayer.frame = self.bounds;
+        [self updateGradientLayerColours:false];
         [_blurView.layer insertSublayer:_gradientLayer atIndex:0];
 
         _animated = specifier.properties[@"animated"] && [specifier.properties[@"animated"] boolValue];
 
-        if (specifier.properties[@"prefsBundle"] && specifier.properties[@"icon"]) _icon = [UIImage imageNamed:specifier.properties[@"icon"] inBundle:[NSBundle bundleWithIdentifier:specifier.properties[@"prefsBundle"]] compatibleWithTraitCollection:nil];
+        if (specifier.properties[@"prefsBundle"] && specifier.properties[@"icon"]) {
+            _icon = [UIImage imageNamed:specifier.properties[@"icon"] inBundle:[NSBundle bundleWithIdentifier:specifier.properties[@"prefsBundle"]] compatibleWithTraitCollection:nil];
+        }
         if (_icon) {
             _iconView = [[UIImageView alloc] initWithImage:_icon];
             _iconView.contentMode = UIViewContentModeScaleAspectFit;
@@ -55,17 +64,19 @@
 
         NSDictionary *control = [JCXPackageInfo controlForBundleID:specifier.properties[@"tweakBundle"]];
         _label = [UILabel new];
-        _label.text = specifier.properties[@"label"] && control ? [specifier.properties[@"label"] stringByInterpolatingPackageInfoFromControl:control] : control ? control[@"Name"] : specifier.properties[@"label"];
-        _label.font = [UIFont fontWithDescriptor:[[UIFont preferredFontForTextStyle:UIFontTextStyleTitle1].fontDescriptor fontDescriptorWithSymbolicTraits:UIFontDescriptorTraitBold] size:0];
-        _label.textColor = [UIColor whiteColor];
+        _label.text = [specifier.properties[@"label"] stringByInterpolatingPackageInfoFromControl:control] ?: control[@"Name"];
+        _label.font = [UIFont systemFontOfSize:25 weight:UIFontWeightBold];
+        if (@available(iOS 13, *)) _label.textColor = specifier.properties[@"textColour"] ? [UIColor hexString:specifier.properties[@"textColour"]] : [UIColor labelColor];
+        else _label.textColor = specifier.properties[@"textColour"] ? [UIColor hexString:specifier.properties[@"textColour"]] : [UIColor whiteColor];
         _label.layer.shadowColor = [UIColor blackColor].CGColor;
         _label.layer.shadowOpacity = 0.25;
         _label.layer.shadowOffset = CGSizeMake(1, 1);
 
         _detailLabel = [UILabel new];
-        _detailLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleCaption1];
-        _detailLabel.text = specifier.properties[@"subtitle"] && control ? [specifier.properties[@"subtitle"] stringByInterpolatingPackageInfoFromControl:control] : control ? [@"v" stringByAppendingString:control[@"Version"]] : specifier.properties[@"subtitle"];
-        _detailLabel.textColor = [UIColor whiteColor];
+        _detailLabel.font = [UIFont systemFontOfSize:11 weight:UIFontWeightRegular];
+        _detailLabel.text = [specifier.properties[@"subtitle"] stringByInterpolatingPackageInfoFromControl:control] ?: [@"v" stringByAppendingString:control[@"Version"]];
+        if(@available(iOS 13, *)) _detailLabel.textColor = specifier.properties[@"textColour"] ? [UIColor hexString:specifier.properties[@"textColour"]] : [UIColor labelColor];
+        else _detailLabel.textColor = specifier.properties[@"textColour"] ? [UIColor hexString:specifier.properties[@"textColour"]] : [UIColor whiteColor];
         _detailLabel.layer.shadowColor = [UIColor blackColor].CGColor;
         _detailLabel.layer.shadowOpacity = 0.25;
         _detailLabel.layer.shadowOffset = CGSizeMake(1, 1);
@@ -119,28 +130,32 @@
     [_gradientLayer removeAllAnimations];
     const CFTimeInterval duration = [(NSNumber *)_specifier.properties[@"animationDuration"] doubleValue] ?: 15;
     const CAKeyframeAnimation *startPointAnimation = [CAKeyframeAnimation animationWithKeyPath:@"startPoint"];
-    startPointAnimation.values = @[[NSValue valueWithCGPoint:CGPointMake(0, 1)],
-                    [NSValue valueWithCGPoint:CGPointMake(1, 1)],
-                    [NSValue valueWithCGPoint:CGPointMake(1, 1)],
-                    [NSValue valueWithCGPoint:CGPointMake(1, -1)],
-                    [NSValue valueWithCGPoint:CGPointMake(1, -1)],
-                    [NSValue valueWithCGPoint:CGPointMake(-1, -1)],
-                    [NSValue valueWithCGPoint:CGPointMake(-1, -1)],
-                    [NSValue valueWithCGPoint:CGPointMake(-1, 1)],
-                    [NSValue valueWithCGPoint:CGPointMake(0, 1)],
-                    [NSValue valueWithCGPoint:CGPointMake(0, 1)]];
+    startPointAnimation.values = @[
+        [NSValue valueWithCGPoint:CGPointMake(0, 1)],
+        [NSValue valueWithCGPoint:CGPointMake(1, 1)],
+        [NSValue valueWithCGPoint:CGPointMake(1, 1)],
+        [NSValue valueWithCGPoint:CGPointMake(1, -1)],
+        [NSValue valueWithCGPoint:CGPointMake(1, -1)],
+        [NSValue valueWithCGPoint:CGPointMake(-1, -1)],
+        [NSValue valueWithCGPoint:CGPointMake(-1, -1)],
+        [NSValue valueWithCGPoint:CGPointMake(-1, 1)],
+        [NSValue valueWithCGPoint:CGPointMake(0, 1)],
+        [NSValue valueWithCGPoint:CGPointMake(0, 1)]
+    ];
     startPointAnimation.duration = duration;
     const CAKeyframeAnimation *endPointAnimation = [CAKeyframeAnimation animationWithKeyPath:@"endPoint"];
-    endPointAnimation.values = @[[NSValue valueWithCGPoint:CGPointMake(1, 0)],
-                    [NSValue valueWithCGPoint:CGPointMake(1, 0)],
-                    [NSValue valueWithCGPoint:CGPointMake(-1, 0)],
-                    [NSValue valueWithCGPoint:CGPointMake(-1, 1)],
-                    [NSValue valueWithCGPoint:CGPointMake(1, 1)],
-                    [NSValue valueWithCGPoint:CGPointMake(1, 1)],
-                    [NSValue valueWithCGPoint:CGPointMake(1, -1)],
-                    [NSValue valueWithCGPoint:CGPointMake(1, -1)],
-                    [NSValue valueWithCGPoint:CGPointMake(1, -1)],
-                    [NSValue valueWithCGPoint:CGPointMake(1, 0)]];
+    endPointAnimation.values = @[
+        [NSValue valueWithCGPoint:CGPointMake(1, 0)],
+        [NSValue valueWithCGPoint:CGPointMake(1, 0)],
+        [NSValue valueWithCGPoint:CGPointMake(-1, 0)],
+        [NSValue valueWithCGPoint:CGPointMake(-1, 1)],
+        [NSValue valueWithCGPoint:CGPointMake(1, 1)],
+        [NSValue valueWithCGPoint:CGPointMake(1, 1)],
+        [NSValue valueWithCGPoint:CGPointMake(1, -1)],
+        [NSValue valueWithCGPoint:CGPointMake(1, -1)],
+        [NSValue valueWithCGPoint:CGPointMake(1, -1)],
+        [NSValue valueWithCGPoint:CGPointMake(1, 0)]
+    ];
     endPointAnimation.duration = duration;
     
     CAAnimationGroup *animationGroup = [CAAnimationGroup new];
@@ -149,5 +164,15 @@
     animationGroup.repeatCount = INFINITY;
     
     [_gradientLayer addAnimation:animationGroup forKey:@"JCXAnimation"];
+}
+- (void)updateGradientLayerColours:(bool)animated {
+    [UIView animateWithDuration:animated ? 0.3 : 0 animations:^{
+        if (@available(iOS 13, *)) _gradientLayer.colors = UIScreen.mainScreen.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark ? _darkColours ?: _colours : _colours;
+        else _gradientLayer.colors = _colours;
+    }];
+}
+- (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection {
+    [super traitCollectionDidChange: previousTraitCollection];
+    [self updateGradientLayerColours:true];
 }
 @end

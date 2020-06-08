@@ -1,13 +1,17 @@
 #import "JCXCashAppCell.h"
 
 @implementation JCXCashAppCell
-+ (NSURL *_Nullable)cashAppURLForUsername:(NSString *_Nonnull)cashTag {
++ (NSURL * _Nullable)cashAppURLForUsername:(NSString * _Nonnull)cashTag {
     cashTag = [cashTag stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
     return [NSURL URLWithString:[@"https://cash.app/" stringByAppendingString:cashTag]];
 }
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier specifier:(PSSpecifier *)specifier {
-    if (!specifier.properties[@"avatarImageSystemName"]) specifier.properties[@"avatarImageSystemName"] = @"dollarsign.circle.fill";
-    if (!specifier.properties[@"accessoryImageSystemName"]) specifier.properties[@"accessoryImageSystemName"] = @"link.circle";
+    if (!specifier.properties[@"avatarImageSystemName"]) {
+        specifier.properties[@"avatarImageSystemName"] = @"dollarsign.circle.fill";
+    }
+    if (!specifier.properties[@"accessoryImageSystemName"]) {
+        specifier.properties[@"accessoryImageSystemName"] = @"link.circle";
+    }
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier specifier:specifier];
     if (self) {
         _cashTag = specifier.properties[@"cashTag"];
