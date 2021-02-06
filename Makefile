@@ -1,6 +1,6 @@
 export ARCHS = arm64 arm64e
-export TARGET := iphone::latest:11.0
-ADDITIONAL_CFLAGS = -DTHEOS_LEAN_AND_MEAN
+export TARGET := iphone::11.0:11.0
+export THEOS_LEAN_AND_MEAN = 1
 INSTALL_TARGET_PROCESSES = Preferences # SpringBoard
 
 include $(THEOS)/makefiles/common.mk
