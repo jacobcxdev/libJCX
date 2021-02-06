@@ -17,8 +17,11 @@
         NSString *information = [specifier.properties[@"information"] stringByInterpolatingPackageInfoFromControl:control];
         NSString *definition = [specifier.properties[@"definition"] stringByInterpolatingPackageInfoFromControl:control];
         NSMutableAttributedString *attributedString = [NSMutableAttributedString new];
+        UIColor *separatorColor = nil;
+        if (@available(iOS 13, *)) separatorColor = [UIColor separatorColor];
+        else separatorColor = [UIColor lightGrayColor];
         NSAttributedString *strikethroughString = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\n\U000000A0%C\U000000A0\n", 0x00000009] attributes:@{
-            NSStrikethroughColorAttributeName: [UIColor separatorColor],
+            NSStrikethroughColorAttributeName: separatorColor,
             NSStrikethroughStyleAttributeName: @(NSUnderlineStyleSingle)
         }];
         if (word) {

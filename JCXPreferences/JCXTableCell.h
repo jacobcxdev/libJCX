@@ -6,5 +6,7 @@
 #import "NSString+Control.h"
 #import "UIColor+HexString.h"
 
-@interface JCXTableCell : PSTableCell
+@interface JCXTableCell : PSTableCell {
+    PSSpecifier * _Nonnull _specifier;
+}
 @end

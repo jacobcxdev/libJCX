@@ -29,27 +29,11 @@
         _username = specifier.properties[@"username"];
         if (!_username) return self;
         self.detailTextLabel.text = [@"@" stringByAppendingString:_username];
-        _avatarURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://mobile.twitter.com/%@/profile_image?size=original", _username]];
+        _avatarURL = [NSURL URLWithString:specifier.properties[@"avatarURL"]];
         _linkURL = [[self class] twitterURLForUsername:_username];
         [self setCellEnabled:true];
         [self loadAvatarIfNeeded];
     }
     return self;
-}
-- (void)loadAvatarIfNeeded {
-    if (_avatar) return;
-    if (!_avatarURL) return;
-    dispatch_async(dispatch_get_global_queue(0,0), ^{
-        NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:_avatarURL];
-		[request setValue:@"Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1)" forHTTPHeaderField:@"User-Agent"];
-		NSURLSessionDataTask *dataTask = [NSURLSession.sharedSession dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-            if (!data) return;
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self setAvatar:[UIImage imageWithData:data]];
-                [self setAvatarHidden:false];
-            });
-        }];
-        [dataTask resume];
-    });
 }
 @end
